@@ -1,5 +1,7 @@
-﻿namespace FootballAI.src.FootballAI.Domain.Entities;
+﻿using FootballAI.src.FootballAI.Domain.Common;
 
-public class Match
+namespace FootballAI.src.FootballAI.Domain.Entities;
+
+public class Match : BaseEntity
 {
 }

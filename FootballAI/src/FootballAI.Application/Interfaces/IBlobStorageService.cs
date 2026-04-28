@@ -1,4 +1,6 @@
-﻿namespace FootballAI.src.FootballAI.Application.Interfaces;
+﻿using Microsoft.AspNetCore.Http;
+
+namespace FootballAI.src.FootballAI.Application.Interfaces;
 
 public interface IBlobStorageService
 {

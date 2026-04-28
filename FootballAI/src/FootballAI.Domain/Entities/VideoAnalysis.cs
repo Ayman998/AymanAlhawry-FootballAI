@@ -1,5 +1,7 @@
-﻿namespace FootballAI.src.FootballAI.Domain.Entities;
+﻿using FootballAI.src.FootballAI.Domain.Common;
 
-public class VideoAnalysis
+namespace FootballAI.src.FootballAI.Domain.Entities;
+
+public class VideoAnalysis : BaseEntity
 {
 }
