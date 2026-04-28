@@ -1,3 +1,14 @@
 <Solution>
-  <Project Path="FootballAI/FootballAI.csproj" />
+  <Folder Name="/src/">
+    <Project Path="FootballAI/src/FootballAI.Domain/FootballAI.Domain.csproj" />
+    <Project Path="FootballAI/src/FootballAI.Application/FootballAI.Application.csproj" />
+    <Project Path="FootballAI/src/FootballAI.ML/FootballAI.ML.csproj" />
+    <Project Path="FootballAI/src/FootballAI.Infrastructure/FootballAI.Infrastructure.csproj" />
+    <Project Path="FootballAI/src/FootbalaAI.API/FootballAI.API.csproj" />
+    <Project Path="FootballAI/src/FootballAI.Worker/FootballAI.Worker.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="FootballAI/src/tests/FootballAI.Tests.Unit/FootballAI.Tests.Unit.csproj" />
+    <Project Path="FootballAI/src/tests/FootballAI.Tests.Integration/FootballAI.Tests.Integration.csproj" />
+  </Folder>
 </Solution>

@@ -1,0 +1,21 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UserSecretsId>FootballAI.Worker</UserSecretsId>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Hangfire.Core" Version="1.8.20" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.1" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\FootballAI.Application\FootballAI.Application.csproj" />
+    <ProjectReference Include="..\FootballAI.Infrastructure\FootballAI.Infrastructure.csproj" />
+    <ProjectReference Include="..\FootballAI.ML\FootballAI.ML.csproj" />
+  </ItemGroup>
+
+</Project>
