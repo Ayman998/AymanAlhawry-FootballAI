@@ -9,6 +9,7 @@
 
   <ItemGroup>
     <Folder Include="src\FootbalaAI.API\Properties\" />
+    <Folder Include="src\FootballAI.ML\Resources\" />
   </ItemGroup>
 
 </Project>
