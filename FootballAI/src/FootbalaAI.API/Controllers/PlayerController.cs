@@ -1,5 +1,5 @@
 ﻿namespace FootballAI.src.FootbalaAI.API.Controllers;
 
-internal class PlayerController
+public class PlayerController
 {
 }
