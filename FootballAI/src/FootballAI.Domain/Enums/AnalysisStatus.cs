@@ -1,5 +1,11 @@
 ﻿namespace FootballAI.src.FootballAI.Domain.Enums;
 
-public class AnalysisStatus
+public enum AnalysisStatus
 {
+    Pending = 0,
+    Queued = 1,
+    Processing = 2,
+    Completed = 3,
+    Failed = 4,
+    Cancelled = 5
 }

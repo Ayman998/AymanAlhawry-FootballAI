@@ -1,5 +1,7 @@
 ﻿namespace FootballAI.src.FootballAI.Domain.Enums;
 
-public class TeamSide
+public enum TeamSide
 {
+    Home = 0,
+    Away = 1
 }
