@@ -1,6 +1,5 @@
 ﻿using FootballAI.Application.DTOs;
-using FootballAI.src.FootballAI.Application.DTOs;
-using FootballAI.src.FootballAI.Application.Interfaces;
+using FootballAI.Application.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

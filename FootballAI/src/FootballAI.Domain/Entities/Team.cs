@@ -1,6 +1,6 @@
-﻿using FootballAI.src.FootballAI.Domain.Common;
+using FootballAI.Domain.Common;
 
-namespace FootballAI.src.FootballAI.Domain.Entities;
+namespace FootballAI.Domain.Entities;
 
 public class Team : BaseEntity
 {

@@ -1,4 +1,4 @@
-﻿namespace FootballAI.src.FootballAI.Domain.Enums;
+﻿namespace FootballAI.Domain.Enums;
 
 public enum EventType
 {

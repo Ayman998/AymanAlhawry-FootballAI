@@ -1,4 +1,4 @@
-﻿using FootballAI.src.FootballAI.Domain.Enums;
+﻿using FootballAI.Domain.Enums;
 
 namespace FootballAI.Application.DTOs;
 

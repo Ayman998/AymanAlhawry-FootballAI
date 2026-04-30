@@ -1,4 +1,4 @@
-﻿namespace FootballAI.src.FootballAI.Application.DTOs;
+namespace FootballAI.Application.DTOs;
 
 public class TeamStatsDto
 {

@@ -1,6 +1,7 @@
-﻿using FootballAI.src.FootballAI.Domain.Common;
+using FootballAI.Domain.Common;
+using MatchType = FootballAI.Domain.Enums.MatchType;
 
-namespace FootballAI.src.FootballAI.Domain.Entities;
+namespace FootballAI.Domain.Entities;
 
 public class Match : BaseEntity
 {
@@ -19,8 +20,8 @@ public class Match : BaseEntity
     public int HomeScore { get; set; }
     public int AwayScore { get; set; }
 
-    public Guid VideoAnalysisId { get; set; }
-    public VideoAnalysis VideoAnalysis { get; set; } = null!;
+    public Guid? VideoAnalysisId { get; set; }
+    public VideoAnalysis? VideoAnalysis { get; set; }
 
     public ICollection<MatchEvent> Events { get; set; } = new List<MatchEvent>();
     public ICollection<PlayerStats> PlayerStats { get; set; } = new List<PlayerStats>();

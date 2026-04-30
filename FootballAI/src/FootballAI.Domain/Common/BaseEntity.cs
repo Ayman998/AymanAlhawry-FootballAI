@@ -1,4 +1,4 @@
-﻿namespace FootballAI.src.FootballAI.Domain.Common;
+﻿namespace FootballAI.Domain.Common;
 
 public abstract class BaseEntity
 {

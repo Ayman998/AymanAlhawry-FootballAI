@@ -1,6 +1,6 @@
-﻿using FootballAI.Application.Interfaces;
-using FootballAI.src.FootballAI.Application.DTOs;
-using FootballAI.src.FootballAI.Domain.Enums;
+﻿using FootballAI.Application.DTOs;
+using FootballAI.Application.Interfaces;
+using FootballAI.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 

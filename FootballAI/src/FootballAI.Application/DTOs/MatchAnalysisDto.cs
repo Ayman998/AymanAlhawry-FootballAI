@@ -1,6 +1,6 @@
-﻿using FootballAI.src.FootballAI.Domain.Enums;
+using FootballAI.Domain.Enums;
 
-namespace FootballAI.src.FootballAI.Application.DTOs;
+namespace FootballAI.Application.DTOs;
 
 public class MatchAnalysisDto
 {
@@ -17,7 +17,6 @@ public class MatchAnalysisDto
     public TeamStatsDto HomeTeamStats { get; set; } = new();
     public TeamStatsDto AwayTeamStats { get; set; } = new();
 }
-
 
 public class MatchEventDto
 {

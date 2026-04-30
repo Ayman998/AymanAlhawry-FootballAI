@@ -1,5 +1,3 @@
-﻿using FootballAI.src.FootballAI.Domain.ValueObjects;
-
 namespace FootballAI.Domain.ValueObjects;
 
 public record BoundingBox(double X, double Y, double Width, double Height)

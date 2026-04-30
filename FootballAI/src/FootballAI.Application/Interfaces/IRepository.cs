@@ -1,4 +1,4 @@
-﻿using FootballAI.src.FootballAI.Domain.Common;
+using FootballAI.Domain.Common;
 
 namespace FootballAI.Application.Interfaces;
 

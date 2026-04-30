@@ -1,7 +1,7 @@
-﻿using FootballAI.Application.DTOs;
-using FootballAI.src.FootballAI.Domain.Entities;
+using FootballAI.Application.DTOs;
+using FootballAI.Domain.Entities;
 
-namespace FootballAI.src.FootballAI.Application.Interfaces;
+namespace FootballAI.Application.Interfaces;
 
 public interface IPlayerTrackingService
 {

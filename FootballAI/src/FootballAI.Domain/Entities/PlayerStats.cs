@@ -1,8 +1,8 @@
-﻿using FootballAI.src.FootballAI.Domain.Common;
+using FootballAI.Domain.Common;
 
-namespace FootballAI.src.FootballAI.Domain.Entities;
+namespace FootballAI.Domain.Entities;
 
-public class PlayerStats :BaseEntity
+public class PlayerStats : BaseEntity
 {
     public Guid MatchId { get; set; }
     public Match Match { get; set; } = null!;

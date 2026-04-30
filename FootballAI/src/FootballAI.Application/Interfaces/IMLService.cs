@@ -1,4 +1,4 @@
-﻿namespace FootballAI.src.FootballAI.Application.Interfaces;
+namespace FootballAI.Application.Interfaces;
 
 public interface IMLService
 {

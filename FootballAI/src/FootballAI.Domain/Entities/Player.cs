@@ -1,7 +1,7 @@
-﻿using FootballAI.Domain.Enums;
-using FootballAI.src.FootballAI.Domain.Common;
+using FootballAI.Domain.Common;
+using FootballAI.Domain.Enums;
 
-namespace FootballAI.src.FootballAI.Domain.Entities;
+namespace FootballAI.Domain.Entities;
 
 public class Player : BaseEntity
 {

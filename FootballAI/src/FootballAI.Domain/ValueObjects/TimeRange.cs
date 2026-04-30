@@ -1,4 +1,4 @@
-﻿namespace FootballAI.src.FootballAI.Domain.ValueObjects;
+﻿namespace FootballAI.Domain.ValueObjects;
 
 public record TimeRange(TimeSpan Start, TimeSpan End)
 {

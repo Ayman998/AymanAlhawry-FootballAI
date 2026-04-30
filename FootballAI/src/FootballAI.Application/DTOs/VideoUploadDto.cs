@@ -1,4 +1,4 @@
-﻿namespace FootballAI.src.FootballAI.Application.DTOs;
+namespace FootballAI.Application.DTOs;
 
 public class VideoUploadDto
 {
@@ -7,9 +7,8 @@ public class VideoUploadDto
     public string Venue { get; set; } = string.Empty;
     public Guid HomeTeamId { get; set; }
     public Guid AwayTeamId { get; set; }
-    public MatchType Type { get; set; }
+    public Domain.Enums.MatchType Type { get; set; }
 }
-
 
 public class VideoUploadResponseDto
 {

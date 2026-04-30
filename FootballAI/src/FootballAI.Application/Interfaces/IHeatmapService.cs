@@ -1,4 +1,4 @@
-﻿using FootballAI.src.FootballAI.Application.DTOs;
+using FootballAI.Application.DTOs;
 
 namespace FootballAI.Application.Interfaces;
 
