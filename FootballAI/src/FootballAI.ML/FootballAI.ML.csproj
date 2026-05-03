@@ -17,6 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\FootballAI.Application\FootballAI.Application.csproj" />
     <ProjectReference Include="..\FootballAI.Domain\FootballAI.Domain.csproj" />
   </ItemGroup>
 
