@@ -26,9 +26,4 @@ public class PlayerStatsDto
     public List<HeatmapPointDto> HeatmapPoints { get; set; } = new();
 }
 
-public class HeatmapPointDto
-{
-    public double X { get; set; }
-    public double Y { get; set; }
-    public double Intensity { get; set; }
-}
+

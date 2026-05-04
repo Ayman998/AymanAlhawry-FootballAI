@@ -1,5 +1,6 @@
 using AutoMapper;
 using FootballAI.Application.DTOs;
+using FootballAI.Application.DTOs.MatchDTOs;
 using FootballAI.Domain.Entities;
 
 namespace FootballAI.Application.Mappings;

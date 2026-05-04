@@ -1,4 +1,4 @@
-﻿using FootballAI.Application.DTOs;
+﻿using FootballAI.Application.DTOs.MatchDTOs;
 using FootballAI.Application.Interfaces;
 using FootballAI.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
