@@ -1,5 +1,8 @@
 using FootballAI.Application.DTOs;
 using FootballAI.Application.Interfaces;
+using FootballAI.Domain.Entities;
+using FootballAI.Domain.Enums;
+using Hangfire;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Logging;
 
@@ -9,18 +12,19 @@ public class VideoProcessingService : IVideoProcessingService
 {
     private readonly IBlobStorageService _blobStorage;
     private readonly IUnitOfWork _uow;
+    private readonly IBackgroundJobClient _jobs;
     private readonly ILogger<VideoProcessingService> _logger;
 
-    // In-memory progress store; replace with Redis/DB in production
-    private static readonly Dictionary<Guid, AnalysisProgressDto> _progressStore = new();
 
     public VideoProcessingService(
         IBlobStorageService blobStorage,
         IUnitOfWork uow,
+        IBackgroundJobClient jobs,
         ILogger<VideoProcessingService> logger)
     {
         _blobStorage = blobStorage;
         _uow = uow;
+        _jobs = jobs;
         _logger = logger;
     }
 
@@ -29,36 +33,61 @@ public class VideoProcessingService : IVideoProcessingService
         VideoUploadDto metadata,
         CancellationToken ct = default)
     {
-        var videoId = Guid.NewGuid();
-        var blobName = $"videos/{videoId}/{file.FileName}";
+        // 1. Validate input
+        if (file is null || file.Length == 0)
+            throw new ArgumentException("Video file is empty");
 
-        _logger.LogInformation("Uploading video {FileName} as blob {BlobName}", file.FileName, blobName);
+        var extension = Path.GetExtension(file.FileName).ToLowerInvariant();
+        var validExtensions = new[] { ".mp4", ".avi", ".mov", ".mkv" };
+        if (!validExtensions.Contains(extension))
+            throw new ArgumentException($"Unsupported video format: {extension}");
 
-        var blobUrl = await _blobStorage.UploadAsync(file, blobName, ct);
-
-        var progress = new AnalysisProgressDto
+        // 2. Create VideoAnalysis record
+        var videoAnalysis = new VideoAnalysis
         {
-            VideoId = videoId,
-            Status = Domain.Enums.AnalysisStatus.Queued,
-            ProgressPercent = 0,
-            CurrentStage = "Uploaded"
+            OriginalFileName = file.FileName,
+            FileSizeBytes = file.Length,
+            Status = AnalysisStatus.Pending,
+            CurrentStage = "Uploading"
         };
-        _progressStore[videoId] = progress;
+        var blobName = $"videos/{videoAnalysis.Id}/{extension}";
+        videoAnalysis.BlobStorageUrl = await _blobStorage.UploadAsync(file, blobName, ct);
+
+        await _uow.VideoAnalyses.AddAsync(videoAnalysis, ct);
+        await _uow.SaveChangesAsync(ct);
+
+        // 4. Queue background processing job
+        var jobId = _jobs.Enqueue<IVideoAnalysisJob>(
+            job => job.AnalyzeAsync(videoAnalysis.Id, metadata, CancellationToken.None));
+
+        _logger.LogInformation(
+        "Video {VideoId} queued for analysis. Job ID: {JobId}",
+        videoAnalysis.Id, jobId);
 
         return new VideoUploadResponseDto
         {
-            VideoId = videoId,
-            JobId = Guid.NewGuid().ToString(),
+            VideoId = videoAnalysis.Id,
+            JobId = jobId,
             Status = "Queued",
-            Message = $"Video uploaded successfully. Processing will begin shortly. Blob: {blobUrl}"
+            Message = "Your video has been queued for analysis."
         };
+
     }
 
-    public Task<AnalysisProgressDto> GetProgressAsync(Guid videoId, CancellationToken ct = default)
+    public async Task<AnalysisProgressDto> GetProgressAsync(Guid videoId, CancellationToken ct = default)
     {
-        if (!_progressStore.TryGetValue(videoId, out var progress))
-            throw new KeyNotFoundException($"No video found with ID {videoId}");
+        var analysis = await _uow.VideoAnalyses.GetByIdAsync(videoId, ct)
+          ?? throw new KeyNotFoundException($"Video {videoId} not found");
 
-        return Task.FromResult(progress);
+
+        return new AnalysisProgressDto
+        {
+            VideoId = analysis.Id,
+            Status = analysis.Status,
+            ProgressPercent = analysis.ProgressPercent,
+            CurrentStage = analysis.CurrentStage,
+            ErrorMessage = analysis.ErrorMessage
+        };
+ 
     }
 }
