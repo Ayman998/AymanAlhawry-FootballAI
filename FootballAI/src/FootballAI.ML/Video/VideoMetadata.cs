@@ -6,4 +6,6 @@ public class VideoMetadata
     public double Fps { get; init; }
     public int Width { get; init; }
     public int Height { get; init; }
+    public string CodecName { get; set; } = string.Empty;
+
 }

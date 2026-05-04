@@ -1,45 +1,55 @@
 using FFMpegCore;
+using Microsoft.Extensions.Logging;
 
 namespace FootballAI.src.FootballAI.ML.Video;
 
 public class FrameExtractor
 {
-    public async Task<VideoMetadata> GetMetadataAsync(string videoPath)
-    {
-        var info = await FFProbe.AnalyseAsync(videoPath);
-        var video = info.PrimaryVideoStream
-            ?? throw new InvalidOperationException($"No video stream found in '{videoPath}'.");
+    private readonly ILogger<FrameExtractor> _logger;
 
-        return new VideoMetadata
-        {
-            Duration = info.Duration,
-            Fps      = video.AvgFrameRate,
-            Width    = video.Width,
-            Height   = video.Height
-        };
+    public FrameExtractor(ILogger<FrameExtractor> logger)
+    {
+        _logger = logger;
     }
 
     public async Task<List<string>> ExtractFramesAsync(
-        string videoPath,
-        string outputDir,
-        int targetFps,
-        CancellationToken ct)
+    string videoPath,
+    string outputDirectory,
+    int targetFps = 5,
+    CancellationToken ct = default)
     {
-        Directory.CreateDirectory(outputDir);
+        Directory.CreateDirectory(outputDirectory);
+        var outputPattern = Path.Combine(outputDirectory, "frame_%05d.jpg");
 
-        var outputPattern = Path.Combine(outputDir, "frame_%06d.jpg");
+        _logger.LogInformation("Extracting frames from {Video} at {Fps} FPS", videoPath, targetFps);
 
         await FFMpegArguments
             .FromFileInput(videoPath)
-            .OutputToFile(outputPattern, overwrite: true, options => options
+            .OutputToFile(outputPattern, overwrite: true, opts => opts
+                .WithVideoFilters(f => f.Scale(1920, 1080))
                 .WithFramerate(targetFps)
                 .ForceFormat("image2"))
             .CancellableThrough(ct)
             .ProcessAsynchronously();
 
-        return Directory
-            .GetFiles(outputDir, "frame_*.jpg")
-            .OrderBy(f => f)
-            .ToList();
+        var frames = Directory.GetFiles(outputDirectory, "frame_*.jpg")
+                              .OrderBy(f => f)
+                              .ToList();
+
+        _logger.LogInformation("Extracted {Count} frames", frames.Count);
+        return frames;
+    }
+
+    public async Task<VideoMetadata> GetMetadataAsync(string videoPath)
+    {
+        var info = await FFProbe.AnalyseAsync(videoPath);
+        return new VideoMetadata
+        {
+            Duration = info.Duration,
+            Width = info.PrimaryVideoStream?.Width ?? 0,
+            Height = info.PrimaryVideoStream?.Height ?? 0,
+            Fps = info.PrimaryVideoStream?.FrameRate ?? 30,
+            CodecName = info.PrimaryVideoStream?.CodecName ?? "unknown"
+        };
     }
 }
