@@ -17,47 +17,60 @@ public class AzureBlobStorageService : IBlobStorageService
         string containerName,
         ILogger<AzureBlobStorageService> logger)
     {
-        _container = new BlobContainerClient(connectionString, containerName);
         _logger = logger;
+        var serviceClient = new BlobServiceClient(connectionString);
+        _container = serviceClient.GetBlobContainerClient(containerName);
+        _container.CreateIfNotExists(PublicAccessType.None);
     }
 
-    public async Task<string> UploadAsync(IFormFile file, string blobName, CancellationToken ct = default)
+    public async Task<string> UploadAsync(
+     IFormFile file, string blobName, CancellationToken ct = default)
     {
-        await _container.CreateIfNotExistsAsync(PublicAccessType.None, cancellationToken: ct);
-        var blob = _container.GetBlobClient(blobName);
-        await using var stream = file.OpenReadStream();
-        await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = file.ContentType }, cancellationToken: ct);
-        _logger.LogInformation("Uploaded blob {BlobName}", blobName);
-        return blob.Uri.ToString();
+        var blobClient = _container.GetBlobClient(blobName);
+        using var stream = file.OpenReadStream();
+        await blobClient.UploadAsync(stream,
+            new BlobHttpHeaders { ContentType = file.ContentType }, cancellationToken: ct);
+        _logger.LogInformation("Uploaded {Blob} ({Size} bytes)", blobName, file.Length);
+        return blobClient.Uri.ToString();
     }
 
-    public async Task<string> UploadAsync(Stream stream, string blobName, string contentType, CancellationToken ct = default)
+    public async Task<string> UploadAsync(
+      Stream stream, string blobName, string contentType, CancellationToken ct = default)
     {
-        await _container.CreateIfNotExistsAsync(PublicAccessType.None, cancellationToken: ct);
-        var blob = _container.GetBlobClient(blobName);
-        await blob.UploadAsync(stream, new BlobHttpHeaders { ContentType = contentType }, cancellationToken: ct);
-        _logger.LogInformation("Uploaded blob {BlobName}", blobName);
-        return blob.Uri.ToString();
+        var blobClient = _container.GetBlobClient(blobName);
+        await blobClient.UploadAsync(stream,
+            new BlobHttpHeaders { ContentType = contentType }, cancellationToken: ct);
+        return blobClient.Uri.ToString();
     }
 
     public async Task<Stream> DownloadAsync(string blobName, CancellationToken ct = default)
     {
-        var blob = _container.GetBlobClient(blobName);
-        var response = await blob.DownloadAsync(ct);
+        var blobClient = _container.GetBlobClient(blobName);
+        var response = await blobClient.DownloadStreamingAsync(cancellationToken: ct);
         return response.Value.Content;
     }
 
     public async Task DeleteAsync(string blobName, CancellationToken ct = default)
     {
-        var blob = _container.GetBlobClient(blobName);
-        await blob.DeleteIfExistsAsync(cancellationToken: ct);
-        _logger.LogInformation("Deleted blob {BlobName}", blobName);
+        var blobClient = _container.GetBlobClient(blobName);
+        await blobClient.DeleteIfExistsAsync(cancellationToken: ct);
     }
+
 
     public Task<string> GetSignedUrlAsync(string blobName, TimeSpan expiry)
     {
-        var blob = _container.GetBlobClient(blobName);
-        var sasUri = blob.GenerateSasUri(BlobSasPermissions.Read, DateTimeOffset.UtcNow.Add(expiry));
-        return Task.FromResult(sasUri.ToString());
+        var blobClient = _container.GetBlobClient(blobName);
+        if (!blobClient.CanGenerateSasUri)
+            throw new InvalidOperationException("Blob client cannot generate SAS URIs");
+
+        var sasBuilder = new BlobSasBuilder
+        {
+            BlobContainerName = _container.Name,
+            BlobName = blobName,
+            Resource = "b",
+            ExpiresOn = DateTimeOffset.UtcNow.Add(expiry)
+        };
+        sasBuilder.SetPermissions(BlobSasPermissions.Read);
+        return Task.FromResult(blobClient.GenerateSasUri(sasBuilder).ToString());
     }
 }
